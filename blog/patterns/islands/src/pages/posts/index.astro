@@ -1,0 +1,43 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import PostFilter from "@/components/PostFilter.vue"
+import { useDbClient } from "@/utils/server.js"
+
+const db = useDbClient()
+
+const { rows: posts } = await db.query(
+    `select post.id,
+            title,
+            author,
+            post.created,
+            to_char(post.created, 'YYYY') as year,
+            category.name                 as category
+     from post
+              join category on post.categoryid = category.id
+     order by created desc`,
+)
+---
+
+<Layout>
+    <div class="container">
+        <header>
+            <h1>Posts</h1>
+            <a class="button" href="/posts/new">New post</a>
+        </header>
+
+        <PostFilter posts={posts} client:idle></PostFilter>
+    </div>
+</Layout>
+
+<style>
+    .container {
+        max-width: 800px;
+        margin: auto;
+    }
+
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>

@@ -1,0 +1,62 @@
+---
+const { post, newPost = false, error = null } = Astro.props
+import { useDbClient } from "@/utils/server.js"
+
+const db = useDbClient()
+
+const { rows: categories } = await db.query("select category.id, name from category")
+---
+<form method="post">
+    {error && <p class="error">{error}</p>}
+    <label>
+        Post title
+        <input type="text" required minlength="1" autofocus name="title" value={post.title}>
+    </label>
+    <label>
+        Author name
+        <input type="text" required minlength="1" name="author" value={post.author}>
+    </label>
+    <label>
+        Category
+        <select name="categoryid" required>
+            {newPost &&
+                    <option disabled selected value> -- please select --</option>}
+            {categories.map(category =>
+                    <option value={category.id}
+                            selected={category.id === post.categoryid ? "selected" : undefined}
+                    >{category.name}</option>)}
+        </select>
+    </label>
+    <label>
+        Body
+        <textarea rows="16" required minlength="1" name="content">{post.content}</textarea>
+    </label>
+    <button type="submit">{newPost ? "Create" : "Update"}</button>
+</form>
+
+<style>
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+    }
+
+    label {
+        display: flex;
+        flex-direction: column;
+        font-weight: bold;
+        gap: 0.5em;
+    }
+
+    input, textarea, button, select {
+        padding: 0.5em;
+    }
+
+    textarea {
+        resize: vertical;
+    }
+
+    button, select {
+        cursor: pointer;
+    }
+</style>

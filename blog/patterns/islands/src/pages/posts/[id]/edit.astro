@@ -1,0 +1,79 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import PostForm from "@/components/PostForm.astro"
+import { useDbClient, makeError } from "@/utils/server.js"
+
+const db = useDbClient()
+
+const { id } = Astro.params
+
+const post = {
+    title: null,
+    author: null,
+    categoryid: null,
+    content: null,
+}
+
+let error = null
+
+if (Astro.request.method === "POST") {
+    const data = await Astro.request.formData()
+    const keys = Object.keys(post)
+    for (const key of keys) {
+        post[key] = data.get(key)
+        if (!post[key] || (typeof (post[key]) === "string" && !post[key].length)) {
+            Astro.response.status = 422
+            error = `${key} cannot be empty!`
+        }
+    }
+
+    if (!error) {
+        await db.query(
+            `update post
+             set modified   = now(),
+                 ${keys[0]} = $1,
+                 ${keys[1]} = $2,
+                 ${keys[2]} = $3,
+                 ${keys[3]} = $4
+             where id = $5`,
+            [...keys.map(key => post[key]), id])
+
+        return Astro.redirect("/posts/" + id)
+    }
+}
+
+const { rows } = await db.query(
+    `select post.id,
+            title,
+            author,
+            content,
+            categoryid
+     from post
+     where post.id = $1`, [id])
+
+if (!rows.length)
+    return makeError(404, "Not found")
+
+Object.assign(post, rows[0])
+---
+
+<Layout>
+    <div class="container">
+        <h1>Edit post</h1>
+
+        <PostForm newPost={false} post={post} error={error}></PostForm>
+    </div>
+</Layout>
+
+<style>
+    .container {
+        max-width: 800px;
+        margin: auto;
+    }
+
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>

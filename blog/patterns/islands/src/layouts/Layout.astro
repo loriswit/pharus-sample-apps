@@ -1,0 +1,24 @@
+---
+import "../styles/main.css"
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>My Blog</title>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+</head>
+<body>
+<header class="site-header">
+    <div class="title">My Blog</div>
+    <nav>
+        <a href="/posts">All posts</a>
+        <a href="/categories">Categories</a>
+    </nav>
+</header>
+<main>
+    <slot/>
+</main>
+</body>
+</html>

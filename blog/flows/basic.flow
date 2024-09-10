@@ -1,0 +1,44 @@
+begin "Open post"
+click a[href="/posts/5"]
+end when img[alt="marrakech-1"]
+
+scroll to .post-footer
+type Loris into #name
+type "Nice post!" into #message
+
+begin "Publish comment"
+click ".post-footer button[type=submit]"
+end when .comment>header>.author::-p-text(Loris)
+
+begin "Browse categories"
+click a[href="/categories"]
+end when .categories>.category
+
+begin "New category"
+click a[href="/categories/new"]
+end when form
+
+type "My category" into form>label>input
+
+begin "Create category"
+click form>button[type=submit]
+end when "header>h1::-p-text(Category: My category)"
+
+begin "New post"
+click .actions>a:first-child
+end when form
+
+type "My post" into form>label:first-of-type>input
+type Loris into form>label:nth-of-type(2)>input
+type "# My blog post
+
+This is a **new** blog post.
+Feel free to comment." into form>label:last-of-type>textarea
+
+begin "Publish post"
+click form>button[type=submit]
+end when ".post-header>h1::-p-text(My post)"
+
+begin "Delete post"
+click ".post-header button"
+end when .posts>.post

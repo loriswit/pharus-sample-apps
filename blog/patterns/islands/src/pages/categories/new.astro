@@ -1,0 +1,41 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import CategoryForm from "@/components/CategoryForm.astro"
+import { useDbClient } from "@/utils/server.js"
+
+const db = useDbClient()
+
+const category = { name: null }
+let error = null
+
+if (Astro.request.method === "POST") {
+    const data = await Astro.request.formData()
+    const name = data.get("name")
+    if (!name || !name.length) {
+        Astro.response.status = 422
+        error = `name cannot be empty!`
+    }
+
+    if (!error) {
+        const { rows } = await db.query(
+            "insert into category (name) values ($1) returning id", [name])
+
+        return Astro.redirect("/categories/" + rows[0].id)
+    }
+}
+---
+
+<Layout>
+    <div class="container">
+        <h1>New category</h1>
+
+        <CategoryForm newCategory={true} category={category} error={error}/>
+    </div>
+</Layout>
+
+<style>
+    .container {
+        max-width: min(600px, 100%);
+        margin: auto;
+    }
+</style>

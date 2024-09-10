@@ -1,0 +1,29 @@
+main {
+    max-width: min(600px, 100%);
+    margin: auto;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+}
+
+label {
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+    gap: 0.5em;
+}
+
+input, textarea, button, select {
+    padding: 0.5em;
+}
+
+textarea {
+    resize: vertical;
+}
+
+button, select {
+    cursor: pointer;
+}

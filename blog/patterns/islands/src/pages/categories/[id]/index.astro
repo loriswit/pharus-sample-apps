@@ -1,0 +1,94 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import PostTile from "@/components/PostTile.astro"
+import { useDbClient, makeError } from "@/utils/server.js"
+
+const db = useDbClient()
+
+const { id } = Astro.params
+
+if (Astro.request.method === "POST") {
+    const data = await Astro.request.formData()
+    if (data.get("action") === "delete") {
+        db.query("delete from category where id = $1", [id])
+        return Astro.redirect("/categories")
+    }
+}
+
+const { rows } = await db.query(
+    `select id, name
+     from category
+     where id = $1`, [id])
+
+if (!rows.length)
+    return makeError(404, "Not found")
+
+const category = rows[0]
+
+const { rows: posts } = await db.query(
+    `select id, title, author, created
+     from post
+     where post.categoryid = $1
+     order by created desc`, [id])
+---
+
+<Layout>
+    <div class="container">
+        <header>
+            <h1>Category: {category.name}</h1>
+            <div class="actions">
+                <a class="button" href={`/posts/new?category=${category.id}`}>New post</a>
+                <a class="button" href={`/categories/${category.id}/edit`}>Edit category</a>
+                <form method="post" id="deleteForm">
+                    <input type="hidden" name="action" value="delete"/>
+                    <button type="submit">Delete category</button>
+                </form>
+            </div>
+        </header>
+
+        {posts.length > 0 ?
+                <div class="posts">
+                    {posts.map(post =>
+                            <PostTile post={post}></PostTile>)}
+                </div>
+            :
+                <p>No posts in this category yet</p>}
+    </div>
+</Layout>
+
+<script defer>
+    document.getElementById("deleteForm").addEventListener("submit", event => {
+        event.preventDefault()
+        if (confirm("Are you sure you want to delete this category and all its posts? (No undo)"))
+            event.target.submit()
+    })
+</script>
+
+<style>
+    .container {
+        max-width: 800px;
+        margin: auto;
+    }
+
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .posts {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+        margin-top: 1em;
+    }
+
+    .actions {
+        display: flex;
+        gap: 0.25em;
+    }
+
+    #deleteForm {
+        display: inline;
+    }
+</style>

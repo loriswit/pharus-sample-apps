@@ -1,0 +1,19 @@
+name: blog-ssr
+
+services:
+
+  web:
+    build: .
+    ports:
+      - "8000"
+    environment:
+      DB_HOST: db
+    volumes:
+      - ${PROJECT_DIR}/../../public/images:/app/public/images
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    build: ../../db
+    image: pharus_postgres

@@ -1,0 +1,49 @@
+.post-footer :is(p, h2, h3) {
+    text-align: center;
+}
+
+.comments {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    width: min(600px, 100%);
+    margin: auto;
+}
+
+.comment {
+    padding: 1em;
+    border-radius: 1em;
+    background: white;
+    border: 1px solid lightgrey;
+}
+
+.comment header {
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1em;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    width: min(600px, 100%);
+    margin: 0 auto 2em;
+}
+
+form label {
+    font-weight: bold;
+}
+
+form textarea {
+    resize: vertical;
+}
+
+form .actions {
+    text-align: right;
+}
+
+form input, form textarea {
+    padding: 0.5em;
+}

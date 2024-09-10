@@ -1,0 +1,22 @@
+name: blog-ur
+
+services:
+
+  web:
+    build: .
+    ports:
+      - "8000"
+    environment:
+      PGHOST: db
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: blog
+    volumes:
+      - ${PROJECT_DIR}/../../public/images:/app/.output/public/images
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    build: ../../db
+    image: pharus_postgres

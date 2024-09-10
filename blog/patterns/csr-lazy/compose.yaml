@@ -1,0 +1,41 @@
+name: blog-csr-lazy
+
+services:
+
+  web:
+    image: "nginx:1.25-alpine-slim"
+    volumes:
+      - ${PROJECT_DIR}/../csr/nginx.conf:/etc/nginx/nginx.conf
+      - client:/app/packages/ui/dist
+    ports:
+      - "8000"
+    depends_on:
+      - node
+
+  node:
+    build:
+      context: ${PROJECT_DIR}/../csr
+      args:
+        api_base_url: /api
+        route_loading: lazy
+    expose:
+      - 3000
+    environment:
+      NO_CORS: true
+      PGHOST: db
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: blog
+    volumes:
+      - client:/app/packages/ui/dist
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    build: ../../db
+    image: pharus_postgres
+
+
+volumes:
+  client:

@@ -1,0 +1,41 @@
+name: blog-csr
+
+services:
+
+  web:
+    build: ./nginx
+    image: pharus_nginx
+    volumes:
+      - client:/app/packages/ui/dist
+      - ${PROJECT_DIR}/../../public/images:/app/packages/ui/dist/images
+    ports:
+      - "8000"
+    depends_on:
+      - node
+
+  node:
+    build:
+      context: .
+      args:
+        api_base_url: /api
+    expose:
+      - 3000
+    environment:
+      NO_CORS: true
+      PGHOST: db
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: blog
+    volumes:
+      - client:/app/packages/ui/dist
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    build: ../../db
+    image: pharus_postgres
+
+
+volumes:
+  client:

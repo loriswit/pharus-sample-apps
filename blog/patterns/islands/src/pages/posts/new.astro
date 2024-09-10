@@ -1,0 +1,59 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import PostForm from "@/components/PostForm.astro"
+import { useDbClient } from "@/utils/server.js"
+
+const db = useDbClient()
+
+const post = {
+    title: null,
+    author: null,
+    categoryid: Number(Astro.url.searchParams.get("category")) ?? "",
+    content: null,
+}
+
+let error = null
+
+if (Astro.request.method === "POST") {
+    const data = await Astro.request.formData()
+    const keys = Object.keys(post)
+    for (const key of keys) {
+        post[key] = data.get(key)
+        if (!post[key] || (typeof (post[key]) === "string" && !post[key].length)) {
+            error = `${key} cannot be empty!`
+            Astro.response.status = 422
+        }
+    }
+
+    if (!error) {
+        const { rows } = await db.query(
+            `insert into post (${keys.join(",")})
+             values ($1, $2, $3, $4)
+             returning id`,
+            keys.map(key => post[key]))
+
+        return Astro.redirect("/posts/" + rows[0].id)
+    }
+}
+---
+
+<Layout>
+    <div class="container">
+        <h1>New post</h1>
+
+        <PostForm newPost={true} post={post} error={error}></PostForm>
+    </div>
+</Layout>
+
+<style>
+    .container {
+        max-width: 800px;
+        margin: auto;
+    }
+
+    header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>

@@ -1,0 +1,27 @@
+.post {
+    background-color: aliceblue;
+    padding: 1em;
+    border-radius: 1em;
+    color: black;
+    text-decoration: none;
+}
+
+.post:hover {
+    background-color: #d6e6f5;
+}
+
+.post:hover h2 {
+    text-decoration: underline;
+}
+
+.post h2 {
+    font-size: 1.2em;
+}
+
+.post > *:first-child {
+    margin-top: 0;
+}
+
+.post > *:last-child {
+    margin-bottom: 0;
+}

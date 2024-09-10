@@ -1,0 +1,11 @@
+@import "../posts/index.css";
+
+.category-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#deleteForm {
+    display: inline;
+}

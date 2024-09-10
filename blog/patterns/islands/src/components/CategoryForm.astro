@@ -1,0 +1,42 @@
+---
+const { category, newCategory = false, error = null } = Astro.props
+---
+<form method="post">
+    {error && <p class="error">{error}</p>}
+    <label>
+        Category name
+        <input type="text" id="textInput" name="name" required minlength="1" autofocus value={category.name}>
+    </label>
+    <button type="submit">{newCategory ? "Create" : "Update"}</button>
+</form>
+
+<script defer>
+    document.getElementById("textInput").select()
+</script>
+
+<style>
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 1em;
+    }
+
+    label {
+        display: flex;
+        flex-direction: column;
+        font-weight: bold;
+        gap: 0.5em;
+    }
+
+    input, textarea, button, select {
+        padding: 0.5em;
+    }
+
+    textarea {
+        resize: vertical;
+    }
+
+    button, select {
+        cursor: pointer;
+    }
+</style>

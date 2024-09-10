@@ -1,0 +1,3 @@
+begin "Open post"
+click a[href="/posts/5"]
+end when img[alt="marrakech-1"]
