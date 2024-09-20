@@ -32,8 +32,22 @@ type "My post" into form>label:first-of-type>input
 type Loris into form>label:nth-of-type(2)>input
 type "# My blog post
 
-This is a **new** blog post.
-Feel free to comment." into form>label:last-of-type>textarea
+Lorem ipsum odor amet, consectetuer adipiscing elit. Leo vivamus
+nam suspendisse tellus arcu est vulputate. Felis aenean inceptos
+nulla sem aptent? Metus **suscipit vehicula** ac torquent condimentum
+fringilla lectus non.
+
+## Heading
+
+Lorem ipsum odor amet, consectetuer adipiscing elit. Leo vivamus
+nam suspendisse tellus arcu est *vulputate*. Felis aenean inceptos
+nulla sem aptent? Metus suscipit vehicula ac torquent condimentum
+fringilla lectus [non](https://example.com).
+
+Lorem ipsum odor amet, consectetuer adipiscing elit. Leo vivamus
+nam suspendisse tellus arcu est vulputate. Felis aenean inceptos
+nulla sem aptent? Metus suscipit vehicula ac torquent condimentum
+fringilla lectus non." into form>label:last-of-type>textarea
 
 begin "Publish post"
 click form>button[type=submit]
