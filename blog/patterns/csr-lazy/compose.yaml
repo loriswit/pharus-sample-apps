@@ -3,10 +3,11 @@ name: blog-csr-lazy
 services:
 
   web:
-    image: "nginx:1.25-alpine-slim"
+    build: ${PROJECT_DIR}/../csr/nginx
+    image: pharus_nginx
     volumes:
-      - ${PROJECT_DIR}/../csr/nginx.conf:/etc/nginx/nginx.conf
       - client:/app/packages/ui/dist
+      - ${PROJECT_DIR}/../../public/images:/app/packages/ui/dist/images
     ports:
       - "8000"
     depends_on:
